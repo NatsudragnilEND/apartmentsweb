@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+*{
+    font-family: 'Poppins',sans-serif;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+ul{
+    list-style: none;
+}
+.wrapper{
+    background-color: rgb(23, 23, 23);
+    height: calc(100% + 100vh);
+}
+* {
+    font-size: 14px;
+    font-family: 'Nunito Sans', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+$red:#bf1010;
+
+:root {
+    --red: rgb(96, 103, 152);
+    --hovered: #1983b5;
+    --white:rgb(65, 65, 65);
+    --interval:10px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');

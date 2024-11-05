@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Где?</title>
+    <style>
+        /* Ваша существующая стилизация */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+        .location-input, .type-input, .furnishing-input, .area-input {
+            margin-top: 20px; /* Отступ между элементами */
+        }
+        body {
+            background-color: #fff;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 20px; /* Отступы для мобильных устройств */
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        h1 {
+            font-size: 36px; /* Уменьшенный размер шрифта для мобильных устройств */
+            font-weight: 600;
+            color: #FF6F00;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        .location-input {
+            display: flex;
+            align-items: center;
+            background-color: #FF6F00;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            width: 100%; /* Полная ширина для мобильных */
+            max-width: 300px; /* Ограничение по максимальной ширине */
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease-in-out;
+            margin-bottom: 20px; /* Отступ снизу для разделения кнопок */
+        }
+
+        .location-input:hover {
+            background-color: #FF8C00;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon {
+            margin-right: 10px;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .text {
+            flex: 1;
+            color: #fff;
+            font-size: 16px; /* Более удобный размер текста для мобильных */
+        }
+
+        .arrow {
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .location-input:hover .arrow {
+            transform: rotate(180deg);
+        }
+
+        .location-input button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 16px; /* Тоже уменьшенный размер текста */
+            font-family: inherit;
+            cursor: pointer;
+            text-align: left;
+            padding: 0;
+        }
+
+        .location-input button:focus {
+            outline: none;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none; /* Скрыто по умолчанию */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.5s;
+        }
+        .buttonsave{
+            background-color: #FF6F00;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            margin-top: 15px;
+            
+        }
+
+        /* Кнопки и секции в модальном окне */
+        .city-options, .type-options, .area-options {
+            width: 100%;
+            margin-bottom: 20px; /* Отступ между секциями */
+        }
+
+        .city-option, .type-option, .area-option, .furnishing-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #FF6F00;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0; /* Начальная непрозрачность для анимации */
+            transform: translateY(20px); /* Начальная позиция для анимации */
+        }
+
+        .city-option:hover, .type-option:hover, .area-option:hover, .furnishing-option:hover {
+            background-color: #FF8C00;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .city-name, .type-name, .furnishing-name, .area-name {
+            font-size: 20px; /* Увеличенный размер текста */
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .team-count {
+            font-size: 18px; /* Увеличенный размер текста */
+            color: #fff;
+            opacity: 0.8;
+        }
+
+        .type-options {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .type-option img {
+            width: 30px; /* Размер картинки для кнопок */
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .city-option, .type-option, .furnishing-option {
+            animation: fadeIn 0.7s ease forwards; /* Увеличена продолжительность */
+        }
+
+        .city-option:nth-child(1), .type-option:nth-child(1), .furnishing-option:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .city-option:nth-child(2), .type-option:nth-child(2), .furnishing-option:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .city-option:nth-child(3), .type-option:nth-child(3), .furnishing-option:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .city-option:nth-child(4), .type-option:nth-child(4), .furnishing-option:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .city-option:nth-child(5), .type-option:nth-child(5), .furnishing-option:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .city-option:nth-child(6), .type-option:nth-child(6), .furnishing-option:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .city-option:nth-child(7), .type-option:nth-child(7), .furnishing-option:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        /* Стили для ввода площади */
+        .area-input {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            padding: 10px;
+            border: 1px solid #FF6F00;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .save-button {
+            background-color: #FF6F00;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .area-input input {
+            padding: 10px;
+            border: 1px solid #FF6F00;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .save-button:hover {
+            background-color: #FF8C00;
+        }
+    </style>
+
+</head>
+<body>
+    <h1>Where ?</h1>
+    <div class="location-input" id="location-input">
+        <i class="icon fas fa-map-marker-alt"></i>
+        <button type="button" class="text" id="location-text" onclick="openCityModal()">Выберите город</button>
+        <i class="arrow fas fa-chevron-down"></i>
+    </div>
+
+    <div class="location-input" id="type-input" style="display: none;">
+        <i class="icon fas fa-home"></i>
+        <button type="button" class="text" id="type-text" onclick="openTypeModal()">Выберите тип объекта</button>
+        <i class="arrow fas fa-chevron-down"></i>
+    </div>
+
+    <div class="location-input" id="furnishing-input" style="display: none;">
+        <i class="icon fas fa-couch"></i>
+        <button type="button" class="text" id="furnishing-text" onclick="openFurnishingModal()">Выберите мебель</button>
+        <i class="arrow fas fa-chevron-down"></i>
+    </div>
+
+    <div class="location-input" id="area-input" style="display: none;">
+        <i class="icon fas fa-ruler-combined"></i>
+        <button type="button" class="text" id="area-text" onclick="openAreaModal()">Введите площадь</button>
+        <i class="arrow fas fa-chevron-down"></i>
+    </div>
+
+    <!-- Модальное окно для выбора города -->
+    <div class="modal" id="city-modal">
+        <div class="modal-content">
+            <h2>Выберите город</h2>
+            <div class="city-options">
+                <div class="city-option" onclick="selectCity('Дубай')">
+                    <div class="city-name">Дубай</div>
+                </div>
+                <div class="city-option" onclick="selectCity('Абу-Даби')">
+                    <div class="city-name">Абу-Даби</div>
+                </div>
+                <div class="city-option" onclick="selectCity('Шарджа')">
+                    <div class="city-name">Шарджа</div>
+                </div>
+                <div class="city-option" onclick="selectCity('Аджман')">
+                    <div class="city-name">Аджман</div>
+                </div>
+                <div class="city-option" onclick="selectCity('Умм Аль-Кувейн')">
+                    <div class="city-name">Умм Аль-Кувейн</div>
+                </div>
+                <div class="city-option" onclick="selectCity('Рас Аль-Хайма')">
+                    <div class="city-name">Рас Аль-Хайма</div>
+                </div>
+                <div class="city-option" onclick="selectCity('Фуджейра')">
+                    <div class="city-name">Фуджейра</div>
+                </div>
+            </div>
+            <button onclick="closeModal('city-modal')">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для выбора типа объекта -->
+    <div class="modal" id="type-modal">
+        <div class="modal-content">
+            <h2>Выберите тип объекта</h2>
+            <div class="type-options">
+                <div class="type-option" onclick="selectType('Квартира')">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/apartment.png"/>
+                    <div class="type-name">Квартира</div>
+                </div>
+                
+                <div class="type-option" onclick="selectType('Коммерческая недвижимость')">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/business.png"/>
+                    <div class="type-name">Коммерческая недвижимость</div>
+                </div>
+            </div>
+            <button onclick="closeModal('type-modal')">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для выбора мебели -->
+    <div class="modal" id="furnishing-modal">
+        <div class="modal-content">
+            <h2>Выберите мебель</h2>
+            <div class="furnishing-options">
+                <div class="furnishing-option" onclick="selectFurnishing('С мебелью')">
+                    <div class="furnishing-name">С мебелью</div>
+                </div>
+                <div class="furnishing-option" onclick="selectFurnishing('Без мебели')">
+                    <div class="furnishing-name">Без мебели</div>
+                </div>
+            </div>
+            <button onclick="closeModal('furnishing-modal')">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="area-modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('area-modal')">&times;</span>
+            <input type="text" id="area-value" placeholder="Введите площадь в м²" />
+            <button  class="buttonsave" onclick="saveArea()">Сохранить</button>
+        </div>
+    </div>
+    
+<!-- Новое поле для ввода, изначально скрыто -->
+<div id="additional-input-group" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('area-modal')">&times;</span>
+        <input type="text" id="area-value" placeholder="Введите укупе в м²" />
+        <button  class="buttonsave" onclick="saveArea()">Сохранить</button>
+    </div>
+</div>
+    <script>
+        function openCityModal() {
+            document.getElementById('city-modal').style.display = 'flex';
+        }
+
+        function openTypeModal() {
+            document.getElementById('type-modal').style.display = 'flex';
+        }
+
+        function openFurnishingModal() {
+            document.getElementById('furnishing-modal').style.display = 'flex';
+        }
+
+
+        function selectCity(city) {
+            document.getElementById('location-text').innerText = city;
+            document.getElementById('type-input').style.display = 'flex';
+            closeModal('city-modal');
+        }
+
+        function selectType(type) {
+            document.getElementById('type-text').innerText = type;
+            document.getElementById('furnishing-input').style.display = 'flex';
+            closeModal('type-modal');
+        }
+
+        function selectFurnishing(furnishing) {
+            document.getElementById('furnishing-text').innerText = furnishing;
+            document.getElementById('area-input').style.display = 'flex';
+            closeModal('furnishing-modal');
+        }
+
+        function openAreaModal() {
+            document.getElementById('area-modal').style.display = 'block';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function saveArea() {
+            const areaValue = document.getElementById('area-value').value;
+            closeModal('area-modal'); // Сначала закрываем модальное окно
+            document.getElementById('area-text').innerText = areaValue + ' м²'; // Затем обновляем текст кнопки
+            document.getElementById('additional-input-group').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
